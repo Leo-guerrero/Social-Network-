@@ -1,25 +1,29 @@
 
 import './App.css'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react'
 
 function App() {
-  const [message, setMessage] = useState<string>("Loading...");
+  const [message, setMessage] = useState('Loading...')
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/hello")
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch(() => setMessage("Failed to fetch message"));
-  }, []);
+    fetch('https://social-network-backend-fb0u.onrender.com')
+      .then(res => res.text())
+      .then(data => setMessage(data))
+      .catch(err => {
+        console.error(err)
+        setMessage('Failed to connect to backend.')
+      })
+  }, [])
 
   return (
-    <div className="min-h-screen bg-blue-900 text-white flex items-center justify-center">
-      <h1 className="text-4xl font-bold">{message}</h1>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-xl">
+      <h1 className="text-3xl font-bold mb-4">Frontend is Live</h1>
+      <p>{message}</p>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
 
 
