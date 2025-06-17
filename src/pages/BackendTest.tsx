@@ -12,7 +12,7 @@ function BackendTest() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:3000/Users') 
+    fetch('https://social-network-backend-fb0u.onrender.com/Users') 
       .then(res => res.json())
       .then(data => {
         setUsers(data);
