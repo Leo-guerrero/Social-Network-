@@ -1,29 +1,21 @@
 
-import './App.css'
 
-import { useEffect, useState } from 'react'
+
+import { Routes, Route, Link } from 'react-router-dom'
+import Home from './pages/LandingPage'
+import BackendTester from './pages/BackendTest'
+
+
 
 function App() {
-  const [message, setMessage] = useState('Loading...')
-
-  useEffect(() => {
-    fetch('https://social-network-backend-fb0u.onrender.com')
-      .then(res => res.text())
-      .then(data => setMessage(data))
-      .catch(err => {
-        console.error(err)
-        setMessage('Failed to connect to backend.')
-      })
-  }, [])
-
+  
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 text-xl">
-      <h1 className="text-3xl font-bold mb-4">Frontend is Live</h1>
-      <p>{message}</p>
-    </div>
-  )
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/backendtest" element={<BackendTester />} />
+        </Routes>
+  );
 }
 
-export default App
-
+export default App;
 

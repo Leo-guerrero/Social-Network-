@@ -1,16 +1,30 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
+@import "tailwindcss";
 
+@font-face{
+  font-family: Roboot-light;
+  src: url('src/assets/fonts/Roobert-light.otf')
+}
+
+@font-face{
+  font-family: Roboot-Medium;
+  src: url('src/assets/fonts/Roobert-Medium.otf')
+}
+
+@font-face{
+  font-family: Roboot-Bold;
+  src: url('src/assets/fonts/Roobert-Bold.otf')
+}
+ /*padding: 1.5rem;*/
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+ 
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #000000;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -20,12 +34,9 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
   text-decoration: inherit;
 }
-a:hover {
-  color: #535bf2;
-}
+
 
 body {
   margin: 0;
@@ -35,29 +46,46 @@ body {
   min-height: 100vh;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+.RoobootLight {
+  font-family: Roboot-light;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+.RoobootMedium {
+  font-family: Roboot-Medium;
+}
+
+.RoobootBold {
+  font-family: Roboot-Bold;
+}
+
+h1 {
+  
+  line-height: 1.1;
+  font-family: Roboot-Medium;
+}
+
+button{
+  cursor: pointer;
+  transition: background-color 0.3s ease; 
+}
+
+.NavButton {
+  border-radius: 5px;
+  color: rgb(153, 153, 153);
+  padding: 0.5em 1em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  font-family: Roboot-Light;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background-color 0.3s ease; 
 }
-button:hover {
-  border-color: #646cff;
+.NavButton:hover {
+  
+  color: black;
+  background-color: rgb(168, 85, 247);
 }
 button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
+
 
 @media (prefers-color-scheme: light) {
   :root {
