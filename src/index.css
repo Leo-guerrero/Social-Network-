@@ -3,17 +3,20 @@
 
 @font-face{
   font-family: Roboot-light;
-  src: url('/fonts/Roobert-light.otf')
+  src: url('/fonts/Roobert-light.otf') format('opentype');
+  font-style: normal;
 }
 
 @font-face{
   font-family: Roboot-Medium;
-  src: url('/fonts/Roobert-Medium.otf')
+  src: url('/fonts/Roobert-Medium.otf') format('opentype');
+  font-style: normal;
 }
 
 @font-face{
   font-family: Roboot-Bold;
-  src: url('/fonts/Roobert-Bold.otf')
+  src: url('/fonts/Roobert-Bold.otf') format('opentype');
+  font-style: normal;
 }
  /*padding: 1.5rem;*/
 :root {
