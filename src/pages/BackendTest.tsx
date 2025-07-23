@@ -8,11 +8,14 @@ type User = {
 };
 
 function BackendTest() {
+  const BackendURL = import.meta.env.VITE_API_URL;
+  
+
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('https://social-network-backend-fb0u.onrender.com/Users') 
+    fetch(`${BackendURL}/Users`) 
       .then(res => res.json())
       .then(data => {
         setUsers(data);
