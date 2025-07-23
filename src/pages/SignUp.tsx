@@ -10,7 +10,7 @@ function SignUp(){
     const LeaveSignUp = useNavigate();
 
     const {isLoggedIn, setIsLoggedIn} = useAuth();
-
+    console.log(isLoggedIn);
     useEffect(()=>{
             if(localStorage.getItem('isLoggedIn') === 'true'){
             LeaveSignUp('/');

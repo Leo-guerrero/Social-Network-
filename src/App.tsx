@@ -6,7 +6,6 @@ import Home from './pages/LandingPage'
 import SignUp from './pages/SignUp'
 import BackendTester from './pages/BackendTest'
 import Login from './pages/Login';
-import { useState } from 'react';
 import NavBar from './components/NavBar';
 import MainFeed from './pages/MainFeed';
 import Profile from './pages/Profile';

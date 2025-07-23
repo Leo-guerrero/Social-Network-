@@ -1,7 +1,7 @@
-import { useState } from "react";
+
 import { Link } from "react-router-dom";
 import { useAuth } from "../AuthLogin";
-import Popup from "reactjs-popup";
+
 
 function NavBar(){
 
@@ -13,21 +13,6 @@ function NavBar(){
         setIsLoggedIn(false);
     }
 
-    const Tooltip = () => (
-  <Popup
-    trigger={() => (
-      <button className="button py-6 px-6 bg-gray-800 rounded-full"></button>
-    )}
-    position="bottom center"
-    closeOnDocumentClick
-  >
-    <div className="flex flex-col items-center p-3 bg-black border border-gray-800 rounded-xl gap-y-2 px-4">
-        <Link to="/Profile"><button className="text-sm border border-gray-800 p-2 px-4 rounded-lg">Profile</button></Link> 
-        <button style={{ fontFamily: 'Roboot-light' }} className="text-sm border border-gray-800 p-2 px-4 rounded-lg hover:bg-red-500" onClick={SignOut}>Sign Out</button>
-    </div>
-    
-  </Popup>
-);
 
     const signUpButtons = 
     <div className="absolute right-4 flex gap-x-2">

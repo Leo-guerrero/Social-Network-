@@ -14,7 +14,7 @@ function MainFeed(){
 
     const handleLike = async(postid: number) =>{
         try{
-            const response = await fetch(`${BackendURL}/LikeUnLike`, {
+            await fetch(`${BackendURL}/LikeUnLike`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",

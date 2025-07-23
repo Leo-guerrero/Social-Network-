@@ -1,8 +1,8 @@
 import { faHeart, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
-import { faCalendarDays, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarDays} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 import { useParams } from "react-router-dom";
@@ -55,7 +55,7 @@ function Profile(){
 
     const handleLike = async(postid: number) =>{
         try{
-            const response = await fetch(`${BackendURL}/LikeUnLike`, {
+            await fetch(`${BackendURL}/LikeUnLike`, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -98,27 +98,6 @@ function Profile(){
         }
     }
 
-    const handleSubmitPOST = async(e: React.FormEvent ) =>{
-        e.preventDefault();
-
-        try {
-            const response = await fetch(`${BackendURL}/CreatePost/${currentUser.id}`,{
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if(response.ok){
-                window.location.reload();
-            }
-
-        } catch(error){
-            console.log(error);
-        }
-        
-    }
 
     const [usersPosts, setUsersPosts] = useState<Post[]>([])
 
@@ -144,7 +123,7 @@ function Profile(){
         
     }
 
-    const NickName = currentUser.name
+    
     
     
 

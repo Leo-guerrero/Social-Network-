@@ -15,7 +15,7 @@ function Login(){
         
     const {isLoggedIn, setIsLoggedIn} = useAuth();
     
-
+    console.log(isLoggedIn);
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
         setFormData(prev => ({...prev, [e.target.name]: e.target.value,
             })
