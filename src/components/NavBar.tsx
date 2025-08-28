@@ -27,13 +27,13 @@ function NavBar(){
 
     return (
         
-        <div className="w-full flex fixed top-0 w-full py-2 border-b-1 border-gray-900 bg-black">
+        <div className="w-full flex fixed top-0 w-full py-2 border-b-1 border-gray-900 bg-black z-50">
            
 
             <div className="hidden md:block">
                 <Link to="/"><button><span style={{ fontFamily: 'Roboot-Medium' }} className="px-4 text-lg">The Social Network</span></button></Link>
                 <Link to="/MainFeed"><button style={{ fontFamily: 'Roboot-Medium' }} className="NavButton">Home</button></Link>
-                <button className="NavButton" style={{ fontFamily: 'Roboot-Medium' }}>Contact</button>
+                <Link to="/Program"><button className="NavButton" style={{ fontFamily: 'Roboot-Medium' }}>Program</button></Link>
                 <Link to="/backendtest"><button className="NavButton">Backend</button></Link>
             </div>
 

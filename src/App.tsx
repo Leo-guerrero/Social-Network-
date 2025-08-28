@@ -9,8 +9,8 @@ import Login from './pages/Login';
 import NavBar from './components/NavBar';
 import MainFeed from './pages/MainFeed';
 import Profile from './pages/Profile';
-
-
+import Program from './pages/codepractice'
+import Problem from './pages/ProblemPage.tsx'
 
 function App() {
   
@@ -24,6 +24,8 @@ function App() {
           <Route path="/Login" element={<Login />}> </Route>
           <Route path="/backendtest" element={<BackendTester />} />
           <Route path="/MainFeed" element={<MainFeed />}> </Route> 
+          <Route path="/Program" element={<Program />}></Route>
+          <Route path="/Problem" element={<Problem />}></Route>
           <Route path="/Profile/:id" element={<Profile />}></Route>
         </Routes>
       </>
