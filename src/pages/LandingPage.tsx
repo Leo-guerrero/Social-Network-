@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function LandingPage(){
     console.log("Local Storage: ", localStorage.getItem('currentUser'))
     return (
@@ -10,7 +12,7 @@ function LandingPage(){
             </div>
 
             <div style={{ fontFamily: 'Roboot-light' }} className="text-md md:text-xl">Welcome to the hub for developers who dream bigger. Whether you're sharing your latest project, looking for feedback, or building your network, this is where programmers come together to grow. </div>
-            <div><button style={{ fontFamily: 'Roboot-light' }} className="text-md border border-white p-4 hover:bg-purple-500 hover:border-purple-500">Get Started</button></div>
+            <div><Link to="/Login"><button style={{ fontFamily: 'Roboot-light' }} className="text-md border border-white p-4 hover:bg-purple-500 hover:border-purple-500">Get Started</button></Link></div>
         </div>
     )
 

@@ -1,11 +1,14 @@
-import { faHeart, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
+import { faComment, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faCalendarDays} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 import { useParams } from "react-router-dom";
+import { faHeart as FilledHeart} from "@fortawesome/free-solid-svg-icons";
+import { faHeart as EmptyHeart } from "@fortawesome/free-regular-svg-icons";
+
 
 function Profile(){
     const BackendURL = import.meta.env.VITE_API_URL;
@@ -34,6 +37,9 @@ function Profile(){
         userid: number;
         text: string;
         createdAt: string;
+        likes: {
+            userid: number;
+        }[],
         poster: {
             name: string;
         };
@@ -142,7 +148,7 @@ function Profile(){
             setUsersPosts(data);
            
         })
-    },[]);
+    },[usersPosts]);
 
     useEffect(() => {
         fetch(`${BackendURL}/User/${params.id}`)
@@ -184,16 +190,16 @@ function Profile(){
                 <p className="text-2xl">Posts</p>
 
                 {usersPosts.slice().map(post =>(
-                    <div key={post.id} className="flex flex-row border border-gray-800 px-6 pt-5 pb-1 rounded-lg text-sm md:text-lg w-[220px] sm:w-[470px] lg:w-[650px] gap-x-2">
+                    <Link to={`/postPage/${post.id}`}><div key={post.id} className="flex flex-row border border-gray-800 px-6 pt-5 pb-1 rounded-lg text-sm md:text-lg w-[220px] sm:w-[470px] lg:w-[650px] gap-x-2">
                         <div className="bg-gray-800 p-4 sm:p-5 h-8 w-8 rounded-full"></div>
                         <div className="flex flex-col gap-y-2" style={{ fontFamily: 'Roboot-Bold' }}>
                             <p>{post.poster.name} <span style={{ fontFamily: 'Roboot-Medium' }} className="text-gray-500 text-md">{format(new Date(post.createdAt), 'MMM dd')}</span></p>
                             <p style={{ fontFamily: 'Roboot-Medium' }}>{post.text}</p>
-                            <div className="flex flex-row items-center hover:text-pink-400"> <button className="flex flex-row items-center text-gray-700 hover:text-pink-400"  onClick={() => handleLike(post.id)}><FontAwesomeIcon className="hover:bg-rose-500/50 p-2 rounded-full" icon={faHeart} />
-                            <p className="text-sm">{post._count.likes}</p></button> </div>
+                            <div className="flex flex-row items-center hover:text-pink-400"><button className="hover:bg-purple-500/50 h-8 w-8 rounded-full text-gray-700 hover:text-purple-400"><FontAwesomeIcon icon={faComment} /></button> <p className="text-gray-700 text-sm hover:text-purple-400">0</p> <button className={`hover:bg-rose-500/50 h-8 w-8 rounded-full ${post.likes.some((like) => like.userid == userid) ? "text-red-400 hover:bg-rose-500/50": "text-gray-700 hover:text-pink-400" }`} onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLike(post.id);}}><FontAwesomeIcon icon={post.likes.some(like => like.userid === userid) ? FilledHeart: EmptyHeart} /></button>
+                            <p className="text-gray-700 text-sm hover:text-pink-400">{post._count.likes}</p> </div>
                         </div>
                         
-                    </div>
+                    </div></Link>
                 ))}
             
             </div>

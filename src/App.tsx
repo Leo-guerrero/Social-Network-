@@ -11,6 +11,7 @@ import MainFeed from './pages/MainFeed';
 import Profile from './pages/Profile';
 import Program from './pages/codepractice'
 import Problem from './pages/ProblemPage.tsx'
+import PostPage from './pages/postPage.tsx'
 
 function App() {
   
@@ -27,6 +28,7 @@ function App() {
           <Route path="/Program" element={<Program />}></Route>
           <Route path="/Problem" element={<Problem />}></Route>
           <Route path="/Profile/:id" element={<Profile />}></Route>
+          <Route path="/postPage/:id" element={<PostPage />}></Route>
         </Routes>
       </>
   );

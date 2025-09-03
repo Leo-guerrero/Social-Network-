@@ -34,7 +34,6 @@ function NavBar(){
                 <Link to="/"><button><span style={{ fontFamily: 'Roboot-Medium' }} className="px-4 text-lg">The Social Network</span></button></Link>
                 <Link to="/MainFeed"><button style={{ fontFamily: 'Roboot-Medium' }} className="NavButton">Home</button></Link>
                 <Link to="/Program"><button className="NavButton" style={{ fontFamily: 'Roboot-Medium' }}>Program</button></Link>
-                <Link to="/backendtest"><button className="NavButton">Backend</button></Link>
             </div>
 
             <div className="block md:hidden">
