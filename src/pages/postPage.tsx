@@ -106,6 +106,8 @@ function postPage() {
             .then(data => {
                 setDaPost(data);
                 //added this for replies
+
+                console.log(replies);
                 setReplies(data.replies);
             })
         //added this to maintain state when switching between replies.
