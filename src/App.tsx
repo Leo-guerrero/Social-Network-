@@ -6,7 +6,7 @@ import Home from './pages/LandingPage'
 import SignUp from './pages/SignUp'
 import BackendTester from './pages/BackendTest'
 import Login from './pages/Login';
-import NavBar from './components/NavBar';
+// import NavBar from './components/NavBar';
 import MainFeed from './pages/MainFeed';
 import Profile from './pages/Profile';
 import Program from './pages/codepractice'
@@ -18,7 +18,7 @@ function App() {
 
   return (
     <>
-        <NavBar />
+        {/* <NavBar /> */}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/SignUp" element={<SignUp />}> </Route>

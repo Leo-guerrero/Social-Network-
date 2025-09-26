@@ -8,7 +8,7 @@ import { faHouse, faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-
 import Popup from "reactjs-popup";
 import { useEffect, useState } from "react";
 import { format } from 'date-fns';
-
+import Sidebar from '../components/Sidebar'
 
 function MainFeed(){
     const BackendURL = import.meta.env.VITE_API_URL;
@@ -97,33 +97,44 @@ function MainFeed(){
             setPosts(data)
         })
 
-    }, [posts]);
+    }, []);
     console.log("Post tuah:", posts);
    
     
     return (
-        <div className="flex flex-row justify-center gap-x-4 md:gap-x-12 p-2 overflow-x-hidden py-20 pl-15 md:pl-40 xl:pl-50">
+        <div className="grid grid-cols-[1fr_2fr_1fr] min-h-screen border-x border-gray-300 bg-black">
+            <Sidebar />
+            {/* Left Column */}
+            <div className="flex flex-col justify-between h-screen border-r border-gray-300 p-4 bg-black">
+                <div className="space-y-4">
+                    <button onClick={reloadPage} className="w-full rounded-full bg-black text-white px-6 py-2 hover:bg-gray-900" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faHouse} /> Home</button>
+                    <Link to="" className="flex items-center justify-start w-full rounded-full bg-black text-white px-6 py-2 hover:bg-gray-900 text-lg" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faMagnifyingGlass} className="mr-3"/>Explore</Link>
+                    <Link to="/Program" className="flex items-center justify-start w-full rounded-full bg-black text-white px-6 py-2 hover:bg-gray-900 text-lg" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faCode} className="mr-3"/>Program</Link>
+                    <Link to="" className="flex items-center justify-start w-full rounded-full bg-black text-white px-6 py-2 hover:bg-gray-900 text-lg" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faCode} className="mr-3"/>Notifications</Link>
+                    <Link to="" className="flex items-center justify-start w-full rounded-full bg-black text-white px-6 py-2 hover:bg-gray-900 text-lg" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faMagnifyingGlass} className="mr-3"/>Messages</Link>
+                    <Link to={`/Profile/${currentUser.id}`} className="flex items-center justify-start w-full rounded-full bg-black text-white px-6 py-2 hover:bg-gray-900 text-lg" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faUser} className="mr-3"/>Profile</Link>
+                    
+                    <Popup trigger={<button style={{ fontFamily: 'Roboot-Medium' }} className="w-full rounded-full bg-white text-black font-bold px-6 py-2 hover:bg-gray-200"><FontAwesomeIcon icon={faPlus} />Post</button>} modal>
+                                        <div className="bg-black p-8 border border-gray-600 rounded-xl w-full px-10 flex flex-col gap-y-4">
+                                            
+                                            <form className="flex flex-col gap-y-4" onSubmit={handleSubmit}>
+                                                <label htmlFor="text" className="sr-only">Create a Post</label>
+                                                <textarea className="w-full sm:w-120 h-40 border-none p-4 rounded-xl resize-none focus:outline-none focus:ring-0" id="text" name="text" placeholder="Thoughts? Insight?" onChange={handleChange}></textarea>
+                    
+                                                <button style={{ fontFamily: 'Roboot-Medium' }} className="p-2 bg-purple-500 rounded-xl hover:bg-purple-400" type="submit">Post</button>
+                                            </form>
+                                        </div>
+                    </Popup>
+                </div>
 
-            <div className="flex flex-col p-2 gap-y-2 text-2xl md:text-xl whitespace-nowrap shrink-0 overflow-x-hidden fixed left-0 py-4 md:pl-10 xl:pl-30">
-                <Link to={`/Profile/${currentUser.id}`}><button className="flex items-center gap-x-4 rounded-xl px-2 py-2 hover:bg-purple-500" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faUser} /><span className="hidden md:block">Profile</span></button></Link>
-                <button onClick={reloadPage} className="flex items-center gap-x-4 rounded-xl px-2 py-2 hover:bg-purple-500" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faHouse} /><span className="hidden md:block">Home</span></button>
-                <button className="flex items-center gap-x-4 rounded-xl px-2 py-2 hover:bg-purple-500" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faMagnifyingGlass} /><span className="hidden md:block">Search</span></button>
-                <Link to="/Program"><button className="flex items-center gap-x-4 rounded-xl px-2 py-2 hover:bg-purple-500" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faCode} /><span className="hidden md:block">Program</span></button></Link>
-                
-                <Popup trigger={<button style={{ fontFamily: 'Roboot-Medium' }} className="flex items-center gap-x-4 bg-purple-500 rounded-xl px-2 py-2 hover:bg-purple-400"><FontAwesomeIcon icon={faPlus} /><span className="hidden md:block">Post</span></button>} modal>
-                                    <div className="bg-black p-8 border border-gray-600 rounded-xl w-full px-10 flex flex-col gap-y-4">
-                                        
-                                        <form className="flex flex-col gap-y-4" onSubmit={handleSubmit}>
-                                            <label htmlFor="text" className="sr-only">Create a Post</label>
-                                            <textarea className="w-full sm:w-120 h-40 border-none p-4 rounded-xl resize-none focus:outline-none focus:ring-0" id="text" name="text" placeholder="Thoughts? Insight?" onChange={handleChange}></textarea>
-                
-                                            <button style={{ fontFamily: 'Roboot-Medium' }} className="p-2 bg-purple-500 rounded-xl hover:bg-purple-400" type="submit">Post</button>
-                                        </form>
-                                    </div>
-                </Popup>
+                <div>
+                    <Link to={`/Profile/${currentUser.id}`}><img src="https://d3k8b7apyvc2wb.cloudfront.net/test.png" alt="Profile" className="rounded-full cursor-pointer hover:ring-2 hover:ring-gray-400"></img></Link>
+                </div>
+
             </div>
 
-            <div className="flex flex-col justify-center items-center w-full gap-y-6 overflow-x-hidden md:pl-18 lg:pl-40">
+            {/* Middle Column */}
+            <div className="p-4 bg-black">
             
             
 
@@ -144,6 +155,11 @@ function MainFeed(){
                     </div></Link>
                 )})}
 
+            </div>
+
+            {/* Right Column */}
+            <div className="border-l border-gray-300 p-4">
+                Right
             </div>
         </div>
     )
