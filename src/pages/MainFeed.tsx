@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { faComment, faUser } from "@fortawesome/free-regular-svg-icons";
-import { faCode, faHeart as FilledHeart} from "@fortawesome/free-solid-svg-icons";
+import { faComment} from "@fortawesome/free-regular-svg-icons";
+import { faHeart as FilledHeart} from "@fortawesome/free-solid-svg-icons";
 import { faHeart as EmptyHeart } from "@fortawesome/free-regular-svg-icons";
-import { faHouse, faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
-import Popup from "reactjs-popup";
+//import { faHouse, faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
+//import Popup from "reactjs-popup";
 import { useEffect, useState } from "react";
 import { format } from 'date-fns';
 import Sidebar from '../components/Sidebar'
@@ -29,9 +29,10 @@ function MainFeed(){
         }
     }
 
+    /*
     function reloadPage(){
         window.location.reload();
-    }
+    }*/
 
     type Post = {
         id: number;
@@ -55,12 +56,14 @@ function MainFeed(){
 
     const userid = currentUser.id
 
+    /*
     const [formData, setFormData] = useState({
         text: ""
-    });
+    });*/
 
     const [posts, setPosts] = useState<Post[]>([]);
 
+    /*
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         
         setFormData(prev => ({...prev, [e.target.name]: e.target.value,
@@ -89,7 +92,7 @@ function MainFeed(){
         }
         
     }
-
+    */
 
     useEffect(() => {
         fetch(`${BackendURL}/GetAllPosts`)
@@ -98,7 +101,7 @@ function MainFeed(){
             setPosts(data)
         })
 
-    }, []);
+    }, [posts]);
     console.log("Post tuah:", posts);
 
     // const topLevelPosts = posts.filter(post => !post.parentId);
@@ -109,6 +112,7 @@ function MainFeed(){
             <Sidebar />
             {/* Left Column */}
             <div className="flex flex-col justify-between h-screen border-r border-gray-300 p-4 bg-black">
+                {/*
                 <div className="space-y-4">
                     <button onClick={reloadPage} className="w-full rounded-full bg-black text-white px-6 py-2 hover:bg-gray-900" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faHouse} /> Home</button>
                     <Link to="" className="flex items-center justify-start w-full rounded-full bg-black text-white px-6 py-2 hover:bg-gray-900 text-lg" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faMagnifyingGlass} className="mr-3"/>Explore</Link>
@@ -128,7 +132,7 @@ function MainFeed(){
                                             </form>
                                         </div>
                     </Popup>
-                </div>
+                </div>*/}
 
                 <div>
                     <Link to={`/Profile/${currentUser.id}`}><img src="https://d3k8b7apyvc2wb.cloudfront.net/test.png" alt="Profile" className="rounded-full cursor-pointer hover:ring-2 hover:ring-gray-400"></img></Link>
@@ -162,7 +166,7 @@ function MainFeed(){
 
             {/* Right Column */}
             <div className="border-l border-gray-300 p-4">
-                Right
+                {/*Right*/}
             </div>
         </div>
     )

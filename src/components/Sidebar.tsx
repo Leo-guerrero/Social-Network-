@@ -23,7 +23,7 @@ const Sidebar: React.FC = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isPostModalOpen, setIsPostModalOpen] = useState(false);
     const [showEmojiPanel, setShowEmojiPanel] = useState(false);
-    const [postText, setPostText] = useState("");
+    //const [postText, setPostText] = useState("");
     const navigate = useNavigate();
 
     const currentUser = isLoggedIn
@@ -45,9 +45,43 @@ const Sidebar: React.FC = () => {
         setMenuOpen(false);
     }
 
+    const [formData, setFormData] = useState({
+        text: ""
+    });
+
+    const BackendURL = import.meta.env.VITE_API_URL;
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        
+        setFormData(prev => ({...prev, [e.target.name]: e.target.value,
+            })
+        );
+        console.log(formData.text);
+    }
+
+    const handleSubmit = async(e: React.FormEvent ) =>{
+        e.preventDefault();
+
+        try {
+            const response = await fetch(`${BackendURL}/CreatePost/${currentUser.id}`,{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData)
+            });
+            if (response.ok){
+
+            }
+
+        } catch(error){
+            console.log(error);
+        }
+        
+    }
+
     return (
-        <aside className="fixed top-0 left-0 h-full w-1/5 bg-black text-white p-4 hidden md:flex flex-col justify-between font-roboto border-r border-gray-700">
-            <Link to="/" className="mb-6 flex items-center text-2xl font-bold">The Social Network</Link>
+        <aside style={{ fontFamily: 'Roboot-Medium' }} className="fixed top-0 left-0 h-full w-1/5 bg-black text-white p-4 hidden md:flex flex-col justify-between font-roboto border-r border-gray-700">
+            <Link to="/" className="mb-6 flex items-center text-xl font-bold">The Social Network</Link>
             <div className="flex flex-col space-y-3">
                 {links.map((link, idx) => (
                     <Link
@@ -101,17 +135,19 @@ const Sidebar: React.FC = () => {
 
                     {/* Modal content */}
                     <div className="relative bg-black text-white rounded-lg shadow-lg p-6 w-full max-w-lg z-10 mt-20">
-                        <button className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-800" onClick={() => setIsPostModalOpen(false)}>
+                    <form onSubmit={handleSubmit}>
+                        <button type="button" className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-800" onClick={() => setIsPostModalOpen(false)}>
                             <FontAwesomeIcon icon={faTimes} />
                         </button>
 
                         <h2 className="text-xl font-bold mb-4">Create a Post</h2>
 
-                        <textarea
-                            id="post-textarea"
+                        <textarea 
+                            id="text"
+                            name="text"
+                            value={formData.text}
                             placeholder="What's happening?"
-                            value={postText}
-                            onChange={(e) => setPostText(e.target.value)}
+                            onChange={handleChange}
                             className="w-full bg-black text-white placeholder-gray-400 focus:outline-none resize-none p-2 mb-4"
                             rows={4}
                         ></textarea>
@@ -120,25 +156,27 @@ const Sidebar: React.FC = () => {
                         <div className="flex items-center justify-between mt-2">
                             <div className="flex gap-4">
                                 {/* Image button */}
-                                <button className="p-2 rounded-full hover:bg-gray-800">
+                                <button type="button" className="p-2 rounded-full hover:bg-gray-800">
                                     <FontAwesomeIcon icon={faImage} />
                                 </button>
 
                                 {/* Emoji button */}
                                 <div className="relative">
-                                    <button className="p-2 rounded-full hover:bg-gray-800" onClick={() => setShowEmojiPanel((prev) => !prev)}>
+                                    <button type="button" className="p-2 rounded-full hover:bg-gray-800" onClick={(e) => {setShowEmojiPanel((prev) => !prev);  e.stopPropagation()}}>
                                         <FontAwesomeIcon icon={faSmile} />
                                     </button>
 
                                     {/* Emoji Picker */}
                                     {showEmojiPanel && (
-                                        <div className="absolute top-6 left-0 z-50" style={{ transform: "scale(0.8)" }}>
+                                        <div className="absolute top-6 left-0 z-50" style={{ transform: "scale(0.8)" }} onClick={(e) => e.stopPropagation()}>
                                             <EmojiPicker
                                                 theme={Theme.DARK}
                                                 width={300}
                                                 height={350}
-                                                onEmojiClick={(emojiData: EmojiClickData) => {
-                                                    setPostText((prev) => prev + emojiData.emoji);
+                                                onEmojiClick={(emojiData: EmojiClickData, event) => {
+                                                    event.stopPropagation();
+                                                    event.preventDefault();
+                                                    setFormData((prev) => ({text: prev.text + emojiData.emoji}));
                                                     setShowEmojiPanel(false);
                                                 }}
                                             />
@@ -148,11 +186,12 @@ const Sidebar: React.FC = () => {
                             </div>
 
                             {/* Post button */}
-                            <button className="bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-400">
+                            <button type="submit" className="bg-purple-500 text-white px-4 py-2 rounded-full hover:bg-purple-400">
                                 Post
                             </button>
 
                         </div>
+                    </form>
                     </div>
                 </div>
             )}
