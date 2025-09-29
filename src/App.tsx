@@ -12,7 +12,7 @@ import Profile from './pages/Profile';
 import Program from './pages/codepractice'
 import Problem from './pages/ProblemPage.tsx'
 import PostPage from './pages/postPage.tsx'
-import NavBar from './components/NavBar.tsx';
+//import NavBar from './components/NavBar.tsx';
 
 function App() {
   
