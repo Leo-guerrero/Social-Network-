@@ -35,6 +35,7 @@ function MainFeed(){
 
     type Post = {
         id: number;
+        parentId: null;
         userid: number;
         text: string;
         createdAt: string;
@@ -99,6 +100,8 @@ function MainFeed(){
 
     }, []);
     console.log("Post tuah:", posts);
+
+    // const topLevelPosts = posts.filter(post => !post.parentId);
    
     
     return (
