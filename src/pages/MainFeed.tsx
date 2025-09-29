@@ -145,7 +145,7 @@ function MainFeed(){
             
             
 
-                {posts.slice().reverse().map(post => {
+                {posts.slice().map(post => {
                 
                 
                 return(
