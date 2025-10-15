@@ -54,6 +54,7 @@ const Sidebar: React.FC = () => {
     }
 
     const [file, setFile] = useState<string>("");
+    setFile("");
     const [formData, setFormData] = useState<formdatatype>({
         text: "",
         file: file

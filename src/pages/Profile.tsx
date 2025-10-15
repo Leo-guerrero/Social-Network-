@@ -2,7 +2,7 @@ import { faComment, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faCalendarDays} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
-import { useEffect, useState, type ChangeEvent, type SetStateAction } from "react";
+import { useEffect, useState, type ChangeEvent} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 import { useParams } from "react-router-dom";
@@ -172,6 +172,7 @@ function Profile(){
     }, []);
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    console.log(selectedFile);
 
     const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
