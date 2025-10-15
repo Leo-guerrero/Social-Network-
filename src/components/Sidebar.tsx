@@ -1,5 +1,5 @@
 // Sidebar.tsx
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthLogin";
 import EmojiPicker, {type EmojiClickData, Theme } from "emoji-picker-react";
@@ -16,6 +16,8 @@ import {
     faImage,
     faSmile
 } 
+
+
 from "@fortawesome/free-solid-svg-icons";
 
 const Sidebar: React.FC = () => {
@@ -23,6 +25,7 @@ const Sidebar: React.FC = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [isPostModalOpen, setIsPostModalOpen] = useState(false);
     const [showEmojiPanel, setShowEmojiPanel] = useState(false);
+    const [image, setImage] = useState("");
     //const [postText, setPostText] = useState("");
     const navigate = useNavigate();
 
@@ -45,11 +48,35 @@ const Sidebar: React.FC = () => {
         setMenuOpen(false);
     }
 
-    const [formData, setFormData] = useState({
-        text: ""
+    type formdatatype = {
+        text: string;
+        file: string;
+    }
+
+    const [file, setFile] = useState<string>("");
+    const [formData, setFormData] = useState<formdatatype>({
+        text: "",
+        file: file
     });
 
+    useEffect(() => {
+            fetch(`${BackendURL}/get/image/${currentUser.id}`)
+            .then(res => res.json())
+            .then(data => {
+                setImage(data.url)
+            })
+    
+    }, []);
+
     const BackendURL = import.meta.env.VITE_API_URL;
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const handleButtonClick = () => {
+    // Programmatically click the hidden input
+    fileInputRef.current?.click();
+  };
+    
+    
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         
         setFormData(prev => ({...prev, [e.target.name]: e.target.value,
@@ -58,27 +85,69 @@ const Sidebar: React.FC = () => {
         console.log(formData.text);
     }
 
-    const handleSubmit = async(e: React.FormEvent ) =>{
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        try {
-            const response = await fetch(`${BackendURL}/CreatePost/${currentUser.id}`,{
+        let uploadedFileURL = "";
+
+        // Step 1: upload the image if one exists
+        if (fileInputRef.current?.files?.[0]) {
+            const fileToUpload = fileInputRef.current.files[0];
+            const imageData = new FormData();
+            imageData.append("file", fileToUpload);
+
+            try{
+                const uploadResponse = await fetch(`${BackendURL}/put/image/forPost`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formData)
-            });
-            if (response.ok){
+                body: imageData,
+                });
 
+                if (!uploadResponse.ok) {
+                    const errorText = await uploadResponse.text();
+                    console.error("Image upload failed:", errorText);
+                    alert(errorText);
+                }
+
+                const uploadResult = await uploadResponse.json();
+                uploadedFileURL = uploadResult.filename;
+                console.log("Uploaded image URL:", uploadedFileURL);
+            } catch(err){
+                console.error("Upload error:", err);
+                
+                alert("Upload error: " + (err instanceof Error ? err.message : JSON.stringify(err)));
             }
+            
 
-        } catch(error){
-            console.log(error);
+            
         }
-        
-    }
+        console.log(uploadedFileURL);
 
+            // Step 2: create post
+        const dataToSend = {
+            ...formData,
+            imageURL: uploadedFileURL,
+        };
+
+        try {
+            const response = await fetch(`${BackendURL}/CreatePost/${currentUser.id}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dataToSend),
+                });
+
+        if (response.ok) {
+            console.log("Post created successfully!");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    
+    
+    
     return (
         <aside style={{ fontFamily: 'Roboot-Medium' }} className="fixed top-0 left-0 h-full w-1/5 bg-black text-white p-4 hidden md:flex flex-col justify-between font-roboto border-r border-gray-700">
             <Link to="/" className="mb-6 flex items-center text-xl font-bold">The Social Network</Link>
@@ -107,7 +176,7 @@ const Sidebar: React.FC = () => {
             ) : (
                 <div className="relative flex items-center justify-between px-4 py-2 rounded-full hover:bg-gray-800">
                     <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate(`/profile/${currentUser?.id || ""}`)}>
-                        <img src="/path/to/profile.jpg" alt="Profile" className="w-10 h-10 rounded-full"/>
+                        <img src={image} alt="Profile" className="w-10 h-10 rounded-full"/>
                         <div className="flex flex-col leading-tight">
                             <span className="font-bold">{currentUser?.name || "User"}</span>
                             <span className="text-sm text-gray-400">@username</span>
@@ -156,9 +225,10 @@ const Sidebar: React.FC = () => {
                         <div className="flex items-center justify-between mt-2">
                             <div className="flex gap-4">
                                 {/* Image button */}
-                                <button type="button" className="p-2 rounded-full hover:bg-gray-800">
+                                <button type="button" onClick={handleButtonClick} className="p-2 rounded-full hover:bg-gray-800">
                                     <FontAwesomeIcon icon={faImage} />
                                 </button>
+                                <input type="file" ref={fileInputRef} style={{display: "none"}}></input>
 
                                 {/* Emoji button */}
                                 <div className="relative">
@@ -176,7 +246,7 @@ const Sidebar: React.FC = () => {
                                                 onEmojiClick={(emojiData: EmojiClickData, event) => {
                                                     event.stopPropagation();
                                                     event.preventDefault();
-                                                    setFormData((prev) => ({text: prev.text + emojiData.emoji}));
+                                                    setFormData((prev) => ({...prev, text: prev.text + emojiData.emoji}));
                                                     setShowEmojiPanel(false);
                                                 }}
                                             />

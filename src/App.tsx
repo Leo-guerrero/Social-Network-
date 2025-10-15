@@ -12,7 +12,7 @@ import Profile from './pages/Profile';
 import Program from './pages/codepractice'
 import Problem from './pages/ProblemPage.tsx'
 import PostPage from './pages/postPage.tsx'
-//import NavBar from './components/NavBar.tsx';
+import Sidebar from './components/Sidebar.tsx';
 
 function App() {
   
@@ -30,6 +30,8 @@ function App() {
           <Route path="/Problem" element={<Problem />}></Route>
           <Route path="/Profile/:id" element={<Profile />}></Route>
           <Route path="/postPage/:id" element={<PostPage />}></Route>
+
+          <Route path="/SideBar" element={<Sidebar/>}/>
         </Routes>
       </>
   );

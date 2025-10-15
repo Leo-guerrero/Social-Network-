@@ -2,7 +2,7 @@ import { faComment, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
 import { faCalendarDays} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent, type SetStateAction } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Popup from "reactjs-popup";
 import { useParams } from "react-router-dom";
@@ -57,7 +57,18 @@ function Profile(){
         bio: ""
     });
 
-    
+    const [image, setImage] = useState("");
+    useEffect(() => {
+                fetch(`${BackendURL}/get/image/${params.id}`)
+                .then(res => res.json())
+                .then(data => {
+                    setImage(data.url)
+                    
+                })
+        
+        }, []);
+
+    console.log(image);
 
     const handleLike = async(postid: number) =>{
         try{
@@ -160,13 +171,35 @@ function Profile(){
             })
     }, []);
 
-    
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+        const file = event.target.files[0];
+        setSelectedFile(file);
+
+        const ImageData = new FormData();
+        ImageData.append("file", file);
+
+        const response = await fetch(`${BackendURL}/put/image/${currentUser.id}`, {
+        method: "POST",
+        body: ImageData,
+        });
+
+        const data = await response.json();
+        console.log(data);
+        }
+    };
+
+    function dothing(){
+        console.log("yo");
+    }
 
     return (
         <div className="p-4 flex flex-col justify-start items-center w-screen h-screen gap-y-4 py-20 overflow-x-hidden">
             
             <div className="flex flex-col bg-black p-8 rounded-xl border border-gray-800 w-full md:w-1/2 gap-y-4">
-                <div className="bg-gray-800 rounded-full p-18 w-32"></div>
+                <img src={image} onClick={dothing} className="h-32 w-32 rounded-full hover:brightness-50 transition ease-in-out hover:cursor-pointer"/>
 
                 <div><p className="text-2xl pr-20" style={{ fontFamily: 'Roboot-Bold' }}>{userInfo?.name}</p></div>
                 <div><p className="text-lg pr-20 text-gray-500" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faCalendarDays} /> Joined {format(new Date(userInfo?.createdAt ?? Date.now()), 'MMM dd')}</p></div>
@@ -174,6 +207,8 @@ function Profile(){
                 <Popup trigger={<button id="editProfile" style={{ fontFamily: 'Roboot-Medium' }} className="button text-sm border border-gray-800 py-2 rounded-lg w-32 sm:w-64 hover:bg-purple-500"><FontAwesomeIcon icon={faPenToSquare} /> Edit Profile </button>} modal>
                     <div className="bg-black p-12 border border-gray-600 rounded-xl w-full px-10 flex flex-col gap-y-4">
                         <p className="text-xl font-bold">Edit Profile</p>
+                        <p className="text-md">Profile Picture</p>
+                        <div className="p-2 border border-gray-700 rounded-xl"><input placeholder="Profile Picture" className="hover:cursor-pointer" onChange={handleFileChange} type="file"></input></div>
                         <form className="flex flex-col gap-y-4" onSubmit={handleSubmit}>
                             <label htmlFor="bio" className="sr-only">Add/Edit a Bio</label>
                             <textarea className="w-full sm:w-96 h-40 border border-gray-700 p-4 rounded-xl resize-none" id="bio" name="bio" placeholder="Tell us about yourself..." onChange={handleChange}></textarea>
@@ -191,7 +226,7 @@ function Profile(){
 
                 {usersPosts.slice().map(post =>(
                     <Link to={`/postPage/${post.id}`}><div key={post.id} className="flex flex-row border border-gray-800 px-6 pt-5 pb-1 rounded-lg text-sm md:text-lg w-[220px] sm:w-[470px] lg:w-[650px] gap-x-2">
-                        <div className="bg-gray-800 p-4 sm:p-5 h-8 w-8 rounded-full"></div>
+                        <img src={image} className="h-8 w-8 rounded-full hover:brightness-50 transition ease-in-out" />
                         <div className="flex flex-col gap-y-2" style={{ fontFamily: 'Roboot-Bold' }}>
                             <p>{post.poster.name} <span style={{ fontFamily: 'Roboot-Medium' }} className="text-gray-500 text-md">{format(new Date(post.createdAt), 'MMM dd')}</span></p>
                             <p style={{ fontFamily: 'Roboot-Medium' }}>{post.text}</p>
