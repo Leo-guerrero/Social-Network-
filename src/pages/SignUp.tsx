@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from "../AuthLogin";
 //import { isLoggedIn,setLoggedIn } from "../AuthLogin";
 
@@ -74,7 +74,7 @@ function SignUp(){
 
     return(
 
-        <div className="flex items-center justify-center min-w-screen">
+        <div className="flex flex-col items-center justify-center min-w-screen">
             <div className="flex flex-col p-4 gap-y-6 rounded-xl 3/4">
 
                 <div>
@@ -94,8 +94,8 @@ function SignUp(){
                     
                     <button className="rounded-xl py-3 px-4 bg-purple-500 hover:bg-purple-400 hover:text-black disabled:opacity-50 disabled:pointer-events-none" type="submit" id="sub_button" disabled={!isblank}>Submit</button>
                 </form>
-
             </div>
+            <p className="text-purple-300"><span className="text-gray-400">Already have an account?</span> <Link to="/Login">Login.</Link></p>
         </div>
     )
 }

@@ -27,7 +27,7 @@ function App() {
           <Route path="/backendtest" element={<BackendTester />} />
           <Route path="/MainFeed" element={<MainFeed />}> </Route> 
           <Route path="/Program" element={<Program />}></Route>
-          <Route path="/Problem" element={<Problem />}></Route>
+          <Route path="/Problem/:id" element={<Problem />}></Route>
           <Route path="/Profile/:id" element={<Profile />}></Route>
           <Route path="/postPage/:id" element={<PostPage />}></Route>
 

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthLogin";
 
 function Login(){
@@ -79,6 +79,7 @@ function Login(){
 
                 <button type="submit" id="submit_button" className="rounded-xl py-3 px-4 bg-purple-500 hover:bg-purple-400 hover:text-black disabled:opacity-50 disabled:pointer-events-none" disabled={!isblank}>Submit</button>
             </form>
+            <p className="text-purple-300"><span className="text-gray-400">Don't have an account?</span> <Link to="/SignUp">Sign up now.</Link></p>
         </div>
     )
 }

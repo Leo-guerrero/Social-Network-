@@ -54,7 +54,8 @@ const Sidebar: React.FC = () => {
     }
 
     const [file, setFile] = useState<string>("");
-    setFile("");
+    const [fileTuah, setFileTuah] = useState<string | undefined>("");
+    
     const [formData, setFormData] = useState<formdatatype>({
         text: "",
         file: file
@@ -75,6 +76,9 @@ const Sidebar: React.FC = () => {
     const handleButtonClick = () => {
     // Programmatically click the hidden input
     fileInputRef.current?.click();
+    if (fileInputRef.current?.files?.[0]) {
+        setFileTuah(fileInputRef.current.files[0].name);
+    }
   };
     
     
@@ -87,67 +91,62 @@ const Sidebar: React.FC = () => {
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
+       
         e.preventDefault();
 
-        let uploadedFileURL = "";
+        
 
+        
         // Step 1: upload the image if one exists
         if (fileInputRef.current?.files?.[0]) {
+            setFile("");
             const fileToUpload = fileInputRef.current.files[0];
+            setFileTuah(fileInputRef.current.files[0].name);
             const imageData = new FormData();
             imageData.append("file", fileToUpload);
-
-            try{
-                const uploadResponse = await fetch(`${BackendURL}/put/image/forPost`, {
-                method: "POST",
-                body: imageData,
-                });
-
-                if (!uploadResponse.ok) {
-                    const errorText = await uploadResponse.text();
-                    console.error("Image upload failed:", errorText);
-                    alert(errorText);
-                }
-
-                const uploadResult = await uploadResponse.json();
-                uploadedFileURL = uploadResult.filename;
-                console.log("Uploaded image URL:", uploadedFileURL);
-            } catch(err){
-                console.error("Upload error:", err);
-                
-                alert("Upload error: " + (err instanceof Error ? err.message : JSON.stringify(err)));
-            }
-            
-
             
         }
-        console.log(uploadedFileURL);
+
+        const fileToUpload = fileInputRef.current?.files?.[0];
 
             // Step 2: create post
-        const dataToSend = {
-            ...formData,
-            imageURL: uploadedFileURL,
-        };
+        
+        const formDataToSend = new FormData();
+
+        if(fileToUpload){
+            formDataToSend.append("file", fileToUpload);
+        }
+        
+        formDataToSend.append("text", formData.text);
 
         try {
             const response = await fetch(`${BackendURL}/CreatePost/${currentUser.id}`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(dataToSend),
-                });
+            body: formDataToSend,
+            });
 
         if (response.ok) {
             console.log("Post created successfully!");
+            
             }
         } catch (error) {
-            console.error(error);
+            alert(error);
         }
+        
     };
 
-    
-    
+    const [preview, setPreview] = useState<string>("");
+    const dafileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        const file = e.target.files?.[0];
+        if(e.target.files?.[0]){
+            setFileTuah(e.target.files?.[0].name);
+            
+        }
+        if(file){
+            setPreview(URL.createObjectURL(file));
+        }
+    }
     
     return (
         <aside style={{ fontFamily: 'Roboot-Medium' }} className="fixed top-0 left-0 h-full w-1/5 bg-black text-white p-4 hidden md:flex flex-col justify-between font-roboto border-r border-gray-700">
@@ -205,8 +204,8 @@ const Sidebar: React.FC = () => {
 
                     {/* Modal content */}
                     <div className="relative bg-black text-white rounded-lg shadow-lg p-6 w-full max-w-lg z-10 mt-20">
-                    <form onSubmit={handleSubmit}>
-                        <button type="button" className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-800" onClick={() => setIsPostModalOpen(false)}>
+                    <form onSubmit={(e) => {handleSubmit(e); setIsPostModalOpen(false); setFileTuah(""); setPreview("");}}>
+                        <button type="button" className="absolute top-2 right-2 p-2 rounded-full hover:bg-gray-800" onClick={() => {setIsPostModalOpen(false); setFileTuah(""); setPreview("");}}>
                             <FontAwesomeIcon icon={faTimes} />
                         </button>
 
@@ -221,16 +220,18 @@ const Sidebar: React.FC = () => {
                             className="w-full bg-black text-white placeholder-gray-400 focus:outline-none resize-none p-2 mb-4"
                             rows={4}
                         ></textarea>
-
+                        {fileTuah?.includes(".mp4") ? <video autoPlay controls className="rounded-lg max-h-70" src={preview}/> : <img className="max-h-70 rounded-lg" src={preview}/>}
                         {/* Footer buttons */}
                         <div className="flex items-center justify-between mt-2">
                             <div className="flex gap-4">
                                 {/* Image button */}
-                                <button type="button" onClick={handleButtonClick} className="p-2 rounded-full hover:bg-gray-800">
-                                    <FontAwesomeIcon icon={faImage} />
-                                </button>
-                                <input type="file" ref={fileInputRef} style={{display: "none"}}></input>
-
+                                <div className="flex flex-row">
+                                    <button type="button" onClick={handleButtonClick} className="p-2 rounded-full hover:bg-gray-800">
+                                        <FontAwesomeIcon icon={faImage} />
+                                    </button>
+                                    <input type="file" onChange={dafileChange} ref={fileInputRef} style={{display: "none"}} accept=".png, .jpg, .jpeg, .mp4"></input>
+                                    <p className="flex items-center text-gray-500">{fileTuah}</p>
+                                </div>
                                 {/* Emoji button */}
                                 <div className="relative">
                                     <button type="button" className="p-2 rounded-full hover:bg-gray-800" onClick={(e) => {setShowEmojiPanel((prev) => !prev);  e.stopPropagation()}}>
@@ -253,6 +254,7 @@ const Sidebar: React.FC = () => {
                                             />
                                         </div>
                                     )}
+                                    
                                 </div>
                             </div>
 

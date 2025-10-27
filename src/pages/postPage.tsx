@@ -20,6 +20,7 @@ function postPage() {
         userid: number;
         text: string;
         createdAt: string;
+        imageURL: string;
         likes: {
             userid: number;
         }[];
@@ -38,6 +39,7 @@ function postPage() {
             userid: number;
             text: string;
             createdAt: string;
+            imageURL: string;
             likes: {
                 userid: number;
             }[];
@@ -147,6 +149,11 @@ function postPage() {
                         <div className="flex flex-col gap-y-2">
                             <Link to={`/Profile/${daPost?.poster.id}`}><p><span className="hover:underline text-xl" style={{ fontFamily: 'Roboot-bold' }}>{daPost?.poster.name}</span></p></Link>
                             <p style={{ fontFamily: 'Roboot-Medium' }}>{daPost?.text}</p>
+                            {daPost?.imageURL.includes("mp4") ? ( 
+                                <video className="rounded-lg" src={daPost?.imageURL} autoPlay muted controls />
+                                ) : (
+                                <img className="rounded-lg" src={daPost?.imageURL} />
+                            )}
                             <p><span style={{ fontFamily: 'Roboot-Medium' }} className="text-gray-500 text-md">{daPost?.createdAt ? format(new Date(daPost.createdAt), 'MMM dd, yyyy • h:mm a') : "Loading..."}</span></p>
                         </div>
 

@@ -1,5 +1,5 @@
 import { faComment, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
-import { faCalendarDays} from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCalendarDays} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
 import { useEffect, useState, type ChangeEvent} from "react";
@@ -37,6 +37,7 @@ function Profile(){
         userid: number;
         text: string;
         createdAt: string;
+        imageURL: string;
         likes: {
             userid: number;
         }[],
@@ -159,7 +160,7 @@ function Profile(){
             setUsersPosts(data);
            
         })
-    },[usersPosts]);
+    },[]);
 
     useEffect(() => {
         fetch(`${BackendURL}/User/${params.id}`)
@@ -200,6 +201,10 @@ function Profile(){
         <div className="p-4 flex flex-col justify-start items-center w-screen h-screen gap-y-4 py-20 overflow-x-hidden">
             
             <div className="flex flex-col bg-black p-8 rounded-xl border border-gray-800 w-full md:w-1/2 gap-y-4">
+            <div style={{ fontFamily: 'Roboot-bold' }} className="flex flex-row items-center space-x-6 text-2xl">
+                <Link to="/MainFeed"><FontAwesomeIcon icon={faArrowLeft} /></Link>
+                <p className="text-2xl" style={{ fontFamily: 'Roboot-bold' }}>Profile</p>
+            </div>
                 <img src={image} onClick={dothing} className="h-32 w-32 rounded-full hover:brightness-50 transition ease-in-out hover:cursor-pointer"/>
 
                 <div><p className="text-2xl pr-20" style={{ fontFamily: 'Roboot-Bold' }}>{userInfo?.name}</p></div>
@@ -231,6 +236,11 @@ function Profile(){
                         <div className="flex flex-col gap-y-2" style={{ fontFamily: 'Roboot-Bold' }}>
                             <p>{post.poster.name} <span style={{ fontFamily: 'Roboot-Medium' }} className="text-gray-500 text-md">{format(new Date(post.createdAt), 'MMM dd')}</span></p>
                             <p style={{ fontFamily: 'Roboot-Medium' }}>{post.text}</p>
+                            {post.imageURL.includes("mp4") ? ( 
+                                <video onClick={(e) => {e.preventDefault(); e.stopPropagation();}} className="rounded-lg max-h-100" src={post.imageURL} autoPlay muted controls/>
+                                ) : (
+                                <img className="rounded-lg max-h-100" src={post.imageURL} />
+                            )}
                             <div className="flex flex-row items-center hover:text-pink-400"><button className="hover:bg-purple-500/50 h-8 w-8 rounded-full text-gray-700 hover:text-purple-400"><FontAwesomeIcon icon={faComment} /></button> <p className="text-gray-700 text-sm hover:text-purple-400">0</p> <button className={`hover:bg-rose-500/50 h-8 w-8 rounded-full ${post.likes.some((like) => like.userid == userid) ? "text-red-400 hover:bg-rose-500/50": "text-gray-700 hover:text-pink-400" }`} onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleLike(post.id);}}><FontAwesomeIcon icon={post.likes.some(like => like.userid === userid) ? FilledHeart: EmptyHeart} /></button>
                             <p className="text-gray-700 text-sm hover:text-pink-400">{post._count.likes}</p> </div>
                         </div>
