@@ -60,7 +60,8 @@ function ProblemPage(){
     let testCases2: string | undefined = "";
     testCases2 = problem?.testCaseCode.replace(/\\n/g, "\n").replace(/\\t/g, "\t") || "";
     
-    
+    console.log(startingcode);
+    console.log(testCases2);
 //"public class Solution { \n \n\tpublic static void main(String[] args){\n\n \t\tSystem.out.println(\"Hello World\");\n\t}\n}"
     function WhichDefaultValue(e: String){
         switch(e){
