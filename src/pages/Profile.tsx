@@ -1,5 +1,5 @@
 import { faComment, faPenToSquare } from "@fortawesome/free-regular-svg-icons";
-import { faArrowLeft, faCalendarDays} from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faCalendarDays, faCheck, faPlus} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
 import { useEffect, useState, type ChangeEvent} from "react";
@@ -25,11 +25,30 @@ function Profile(){
     }   
     }, []);
 
+    type follows = {
+        id: number;
+        following: {
+            id: number;
+            name: string;
+            profileURL: string;
+        }
+    }
+
+    type followsTWO = {
+        id: number;
+        follower:{
+            id:number;
+            name: string;
+            profileURL: string;
+        }
+    }
+
     type User = {
         id: number;
         email: string;
         name: string;
         createdAt: string;
+        score: number;
     }
 
     type Post = {
@@ -46,6 +65,21 @@ function Profile(){
         };
         _count: {
             likes: number;
+        }
+    }
+
+    type SolvedProblems = {
+        id: number;
+        userid: number;
+        problemid: number;
+        numSolved: number;
+        currentUserCode: string;
+        createdAt: string;
+        problem: {
+            id: number;
+            name: string;
+            difficulty: string;
+            desc: string;
         }
     }
 
@@ -116,12 +150,19 @@ function Profile(){
         }
     }
 
+    const [sovledProblems, setSolvedProblems] = useState<SolvedProblems[]>([]);
 
     const [usersPosts, setUsersPosts] = useState<Post[]>([])
 
     const [profileInfo, setProfileInfo] = useState<ProfileStuff | null>(null);
 
     const [userInfo, setUserInfo] = useState<User | null>(null);
+
+    const [isFollowing, setIsFollowing] = useState(false);
+
+    const [followersCount, setFollowersCount] = useState(0);
+    const [followersCountObj, setfollowersCountObj] = useState<followsTWO[]>([]);
+    const [followingCount, setFollowingCount] = useState<follows[]>([]);
 
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
 
@@ -151,7 +192,7 @@ function Profile(){
         .then(data => {
             setProfileInfo(data);
         })
-    },[]);
+    },[params.id]);
 
     useEffect(() => {
         fetch(`${BackendURL}/UserSpecific/${params.id}`)
@@ -160,7 +201,7 @@ function Profile(){
             setUsersPosts(data);
            
         })
-    },[]);
+    },[params.id]);
 
     useEffect(() => {
         fetch(`${BackendURL}/User/${params.id}`)
@@ -170,7 +211,86 @@ function Profile(){
 
                 console.log(userInfo)
             })
-    }, []);
+    }, [params.id]);
+
+    useEffect(() => {
+        fetch(`${BackendURL}/grab/users/submitted/problems/${params.id}`)
+            .then(res => res.json())
+            .then(data => {
+                setSolvedProblems(data);
+            })
+    }, [params.id])
+
+    // ---- FOLLOW FEATURE ----
+    useEffect(() => {
+        if (!params.id || !userid) return;
+
+        const checkFollowStatus = async () => {
+        try {
+            const res = await fetch(`${BackendURL}/following/${userid}`);
+            const data = await res.json();
+            const followingIds = data.map((u: any) => u.id);
+            setIsFollowing(followingIds.includes(Number(params.id)));
+        } catch (err) {
+            console.error("Error checking follow status:", err);
+        }
+        };
+
+        const fetchFollowerCount = async () => {
+        try {
+            const res = await fetch(`${BackendURL}/followers/${params.id}`);
+            const data = await res.json();
+            setfollowersCountObj(data);
+            setFollowersCount(data.length);
+        } catch (err) {
+            console.error("Error fetching follower count:", err);
+        }
+        };
+
+        const fetchFollowingCount = async () => {
+            try {
+                const res = await fetch(`${BackendURL}/User/follows/list/${params.id}`);
+                const data = await res.json();
+
+                setFollowingCount(data);
+
+            } catch (err){
+                console.log("AHAHAHAHA");
+            }
+        }
+
+        checkFollowStatus();
+        fetchFollowingCount();
+        fetchFollowerCount();
+    }, [params.id, userid]);
+
+    const handleFollowToggle = async () => {
+    try {
+        const route = isFollowing ? "unfollow" : "follow";
+
+        const response = await fetch(`${BackendURL}/${route}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            followerId: Number(userid),
+            followingId: Number(params.id),
+        }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+        setIsFollowing(!isFollowing);
+        setFollowersCount((prev) => (isFollowing ? prev - 1 : prev + 1));
+        } else {
+        console.error("Follow/unfollow failed:", data);
+        }
+    } catch (error) {
+        console.error("Error toggling follow:", error);
+    }
+    };
+
+  // ---- END FOLLOW FEATURE ----
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     console.log(selectedFile);
@@ -197,6 +317,8 @@ function Profile(){
         console.log("yo");
     }
 
+    const [showPosts, setShowPosts] = useState<boolean>(true);
+ 
     return (
         <div className="p-4 flex flex-col justify-start items-center w-screen h-screen gap-y-4 py-20 overflow-x-hidden">
             
@@ -208,7 +330,35 @@ function Profile(){
                 <img src={image} onClick={dothing} className="h-32 w-32 rounded-full hover:brightness-50 transition ease-in-out hover:cursor-pointer"/>
 
                 <div><p className="text-2xl pr-20" style={{ fontFamily: 'Roboot-Bold' }}>{userInfo?.name}</p></div>
+                <p style={{ fontFamily: 'Roboot-Medium' }} className="text-purple-500"><span style={{ fontFamily: 'Roboot-bold' }}>Score</span> {userInfo?.score}</p>
                 <div><p className="text-lg pr-20 text-gray-500" style={{ fontFamily: 'Roboot-Medium' }}><FontAwesomeIcon icon={faCalendarDays} /> Joined {format(new Date(userInfo?.createdAt ?? Date.now()), 'MMM dd')}</p></div>
+                <div style={{ fontFamily: 'Roboot-bold' }}><p className="font-bold">{followingCount.length}&nbsp;
+                <Popup trigger={<button><span className="font-normal text-gray-500">Following</span></button>} modal>
+                    <div className="bg-black p-12 border border-gray-600 rounded-xl w-full px-10 flex flex-col gap-y-4">
+                        <p style={{ fontFamily: 'Roboot-bold' }} className="text-xl">Following</p>
+                        {followingCount.map((following) => {
+                            return (
+                                <div className="flex flex-row items-center space-x-4" style={{ fontFamily: 'Roboot-Medium' }}>
+                                    <img className="h-8 w-8 min-w-8 min-h-8 rounded-full object-cover" src={following.following.profileURL}/>
+                                    <Link to={`/Profile/${following.following.id}`}><p>{following.following.name}</p></Link>
+                                </div>
+                            )
+                        })}
+                    </div> 
+                </Popup>&nbsp;&nbsp; {followersCount}&nbsp;
+                <Popup trigger={<button><span className="font-normal text-gray-500">Followers</span></button>} modal> 
+                        <div className="bg-black p-12 border border-gray-600 rounded-xl w-full px-10 flex flex-col gap-y-4">
+                            <p style={{ fontFamily: 'Roboot-bold' }} className="text-xl">Followers</p>
+                            {followersCountObj.map( (follower) => {
+                                return (
+                                    <div className="flex flex-row items-center space-x-4" style={{ fontFamily: 'Roboot-Medium' }}>
+                                        <img className="h-8 w-8 min-w-8 min-h-8 rounded-full object-cover" src={follower.follower.profileURL}/>
+                                        <Link to={`/Profile/${follower.follower.id}`}><p>{follower.follower.name}</p></Link>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                </Popup></p></div>
                 <div><p className="text-lg" style={{ fontFamily: 'Roboot-Medium' }}>{profileInfo?.bio}</p> </div>
                 <Popup trigger={<button id="editProfile" style={{ fontFamily: 'Roboot-Medium' }} className="button text-sm border border-gray-800 py-2 rounded-lg w-32 sm:w-64 hover:bg-purple-500"><FontAwesomeIcon icon={faPenToSquare} /> Edit Profile </button>} modal>
                     <div className="bg-black p-12 border border-gray-600 rounded-xl w-full px-10 flex flex-col gap-y-4">
@@ -223,16 +373,21 @@ function Profile(){
                         </form>
                     </div>
                 </Popup>
+                <div><button onClick={handleFollowToggle} style={{ fontFamily: 'Roboot-Medium' }} className={ params.id == currentUser.id ? "hidden" : isFollowing ? "border border-gray-800 hover:text-red-500 rounded-lg w-32 py-2" : "bg-purple-500 hover:bg-purple-400 rounded-lg w-32 py-2"}>{isFollowing ? <><FontAwesomeIcon icon={faCheck}/> <span>Following</span></> : <><FontAwesomeIcon icon={faPlus}/> <span>Follow</span></>}</button></div>
                 
                 
             </div>
 
             <div className="flex flex-col gap-y-2 border border-gray-800 rounded-xl px-12 w-full md:w-1/2 py-6">
-                <p className="text-2xl">Posts</p>
+                <div style={{ fontFamily: 'Roboot-Medium' }} className="flex flex-row space-x-6 justify-center">
+                    <button onClick={() => {setShowPosts(true)}} className="text-2xl border border-gray-800 px-2 rounded-lg hover:bg-gray-800">Posts</button><button onClick={() => {setShowPosts(false)}} className="text-2xl border border-gray-800 px-2 rounded-lg hover:bg-gray-800">Submitted Problems</button>
+                </div>
 
-                {usersPosts.slice().map(post =>(
+                {
+                showPosts ?
+                usersPosts.slice().map(post =>(
                     <Link to={`/postPage/${post.id}`}><div key={post.id} className="flex flex-row border border-gray-800 px-6 pt-5 pb-1 rounded-lg text-sm md:text-lg w-[220px] sm:w-[470px] lg:w-[650px] gap-x-2">
-                        <img src={image} className="h-8 w-8 rounded-full hover:brightness-50 transition ease-in-out" />
+                        <img src={image} className="h-8 w-8 min-w-8 min-h-8 rounded-full hover:brightness-50 transition ease-in-out" />
                         <div className="flex flex-col gap-y-2" style={{ fontFamily: 'Roboot-Bold' }}>
                             <p>{post.poster.name} <span style={{ fontFamily: 'Roboot-Medium' }} className="text-gray-500 text-md">{format(new Date(post.createdAt), 'MMM dd')}</span></p>
                             <p style={{ fontFamily: 'Roboot-Medium' }}>{post.text}</p>
@@ -246,7 +401,21 @@ function Profile(){
                         </div>
                         
                     </div></Link>
-                ))}
+                ))
+                :
+                sovledProblems.slice().map(solvedProb => (
+                    <Link to={`/problemHistory/${solvedProb.problem.id}`}>
+                    <div style={{ fontFamily: 'Roboot-Medium' }} className="flex flex-col space-y-2 border border-gray-800 p-4 rounded-lg">
+                        <div className="flex flex-row text-2xl"><p>{solvedProb.problem.id}.&nbsp;</p><p className="">{solvedProb.problem.name}</p></div>
+                        <p className="bg-gray-800 rounded-full p-2 w-fit text-sm">{solvedProb.problem.difficulty}</p>
+                        <p className="text-gray-500">Submitted at: {format(new Date(solvedProb.createdAt), 'MMM dd')}</p>
+                        <p className="text-purple-500">Test cases Passed: [{solvedProb.numSolved}/6]</p>
+                        <p className="line-clamp-5">{solvedProb.problem.desc}</p>
+                    </div>
+                    </Link>
+                ))
+                
+                }
             
             </div>
             

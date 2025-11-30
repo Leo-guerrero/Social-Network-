@@ -141,7 +141,39 @@ function ProblemPage(){
     const [defaultValue, setdefaultValue] = useState<string>("");
     const [sourceCode, setSourceCode] = useState(defaultValue);
 
-    
+    const submitCode = async () => {
+
+        let numTestCasesSolved = 0;
+        for(let i = 0; i < 6; i++){
+            if ((exactValsReturned[i] == (problem?.answers.find(a => a.answerOrder == i))?.daAnswer)){
+                 numTestCasesSolved++;
+            }   
+        }
+
+
+        if(numTestCasesSolved >= 3){
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const SolvedProbleminfo = new FormData();
+            SolvedProbleminfo.append("userid", currentUser.id);
+            SolvedProbleminfo.append("currentUserCode", sourceCode);
+
+            const response = await fetch(`${BackendURL}/create/Solved/problem/${problem?.id}`, {
+                method: 'POST',
+                headers: {
+                        "content-Type" : "application/json",
+                },
+                body: JSON.stringify({
+                    userid: currentUser.id,
+                    currentUserCode: sourceCode,
+                    numSolved: numTestCasesSolved,
+                }),
+            });
+            
+        }
+
+
+        
+    }
 
     return (
 
@@ -207,7 +239,7 @@ function ProblemPage(){
                     </div>
                     <p className={`${changeTabs == "True" ? "text-red-500" : "text-white"}`}><FontAwesomeIcon icon={faEye} /> Changed Tabs?: {changeTabs}</p>
                     <p className="pb-4"><FontAwesomeIcon icon={faClock} /> Runtime: {runetime}</p>
-                    <button id='CodeSubmit' className="p-2 bg-purple-500 rounded-lg text-lg hover:bg-purple-400 disabled:bg-gray-800"><FontAwesomeIcon icon={faCloudArrowUp} /> Submit</button>
+                    <button id='CodeSubmit' onClick={submitCode} className="p-2 bg-purple-500 rounded-lg text-lg hover:bg-purple-400 disabled:bg-gray-800"><FontAwesomeIcon icon={faCloudArrowUp} /> Submit</button>
                     </>
                     }
 
