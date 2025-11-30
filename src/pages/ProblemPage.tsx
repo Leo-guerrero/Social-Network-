@@ -167,10 +167,11 @@ function ProblemPage(){
                     currentUserCode: sourceCode,
                     numSolved: numTestCasesSolved,
                 }),
+                
             });
-            
+            console.log(response);
         }
-
+        
 
         
     }
