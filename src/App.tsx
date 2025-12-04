@@ -14,6 +14,8 @@ import Problem from './pages/ProblemPage.tsx'
 import PostPage from './pages/postPage.tsx'
 import Sidebar from './components/Sidebar.tsx';
 import ProbHistUser from './pages/ProbHistUser.tsx';
+import Notifications from './pages/Notifications.tsx';
+import Messages from './pages/Messages.tsx';
 
 function App() {
   
@@ -31,6 +33,8 @@ function App() {
           <Route path="/Problem/:id" element={<Problem />}></Route>
           <Route path="/Profile/:id" element={<Profile />}></Route>
           <Route path="/postPage/:id" element={<PostPage />}></Route>
+          <Route path="/Notifications" element={<Notifications />}></Route>
+          <Route path="/Messages" element={<Messages />}></Route>
           <Route path="/problemHistory/:id" element={<ProbHistUser/>} ></Route>
 
           <Route path="/SideBar" element={<Sidebar/>}/>

@@ -37,8 +37,8 @@ const Sidebar: React.FC = () => {
         { icon: faHouse, text: "Home", page: "/MainFeed" },
         { icon: faMagnifyingGlass, text: "Explore", page: "" },
         { icon: faCode, text: "Program", page: "/Program" },
-        { icon: faBell, text: "Notifications", page: "" },
-        { icon:faEnvelope, text: "Messages", page: "" },
+        { icon: faBell, text: "Notifications", page: "/Notifications" },
+        { icon:faEnvelope, text: "Messages", page: "/Messages" },
     ];
 
     function SignOut() {
