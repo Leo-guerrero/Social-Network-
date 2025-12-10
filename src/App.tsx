@@ -13,6 +13,7 @@ import Program from './pages/codepractice'
 import Problem from './pages/ProblemPage.tsx'
 import PostPage from './pages/postPage.tsx'
 import Sidebar from './components/Sidebar.tsx';
+import Explore from './pages/Explore.tsx';
 
 function App() {
   
@@ -32,6 +33,7 @@ function App() {
           <Route path="/postPage/:id" element={<PostPage />}></Route>
 
           <Route path="/SideBar" element={<Sidebar/>}/>
+          <Route path="/Explore" element={<Explore/>}></Route>
         </Routes>
       </>
   );

@@ -35,7 +35,7 @@ const Sidebar: React.FC = () => {
 
     const links = [
         { icon: faHouse, text: "Home", page: "/MainFeed" },
-        { icon: faMagnifyingGlass, text: "Explore", page: "" },
+        { icon: faMagnifyingGlass, text: "Explore", page: "/Explore" },
         { icon: faCode, text: "Program", page: "/Program" },
         { icon: faBell, text: "Notifications", page: "" },
         { icon:faEnvelope, text: "Messages", page: "" },
