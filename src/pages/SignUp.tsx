@@ -8,6 +8,8 @@ function SignUp(){
 
     const BackendURL = import.meta.env.VITE_API_URL;
     const LeaveSignUp = useNavigate();
+    const [errorMessage, setErrorMessage] = useState("");
+
 
     const {isLoggedIn, setIsLoggedIn} = useAuth();
     console.log(isLoggedIn);
@@ -34,43 +36,53 @@ function SignUp(){
 
     const isblank = formData.name && formData.email && formData.password
 
-    const handleSubmit = async(e: React.FormEvent) => {
-        e.preventDefault();
+    const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage(""); // reset error on new submit
 
-        try{
+    try {
+        const response = await fetch(`${BackendURL}/Users`, {
+            method: "POST",
+            headers: {
+                "content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        });
 
-            const response = await fetch(`${BackendURL}/Users`,{
-                    method: "POST",
-                    headers: {
-                        "content-Type" : "application/json",
-                    },
-                    body: JSON.stringify(formData),
-                });
-
-            if (!response.ok){
-                throw new Error("Failed to create new user");
-                
+        if (!response.ok) {
+            // Check for duplicate email
+            if (response.status === 409) {
+                setErrorMessage("An account with this email already exists.");
+                return;
             }
 
-            if(response.ok){
-                //setLoggedIn(true);
-                const currentUser = await response.json();
-                console.log(currentUser);
+            // Try to read backend error message
+            const data = await response.json().catch(() => null);
 
-                localStorage.setItem('currentUser', JSON.stringify(currentUser))
-                localStorage.setItem('isLoggedIn', 'true');
-                setIsLoggedIn(true);
-                
-                LeaveSignUp('/');
+            if (data?.error) {
+                setErrorMessage(data.error);
+            } else {
+                setErrorMessage("Failed to create user. Please try again.");
             }
 
-            
-
-        } catch(err){
-            console.log("ERROR: ", err)
+            return;
         }
 
-    };
+        // SUCCESS CASE
+        const currentUser = await response.json();
+        console.log(currentUser);
+
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        localStorage.setItem("isLoggedIn", "true");
+        setIsLoggedIn(true);
+
+        LeaveSignUp("/");
+    } catch (err) {
+        console.log("ERROR: ", err);
+        setErrorMessage("Something went wrong. Please try again later.");
+    }
+};
+
 
     return(
 
@@ -91,6 +103,12 @@ function SignUp(){
 
                     <label htmlFor="password" className="sr-only">Enter a Password</label>
                     <input id="password" name="password" type="password" placeholder="Password" value={formData.password} onChange={handleChange} className="border-2 border-gray-700 rounded-xl py-3 px-4"></input>
+
+                    {errorMessage && (
+                        <div className="bg-red-900/40 text-red-300 p-2 rounded-lg text-sm text-center">
+                            {errorMessage}
+                        </div>
+                    )}
                     
                     <button className="rounded-xl py-3 px-4 bg-purple-500 hover:bg-purple-400 hover:text-black disabled:opacity-50 disabled:pointer-events-none" type="submit" id="sub_button" disabled={!isblank}>Submit</button>
                 </form>
