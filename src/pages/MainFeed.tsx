@@ -177,7 +177,7 @@ function MainFeed(){
                     
                     
                     <Link to={`/postPage/${post.id}`}><div key={post.id} className="flex flex-row border border-gray-800 px-6 pt-5 pb-1 rounded-lg text-sm md:text-lg w-[300px] sm:w-[470px] lg:w-[650px] gap-x-2">
-                        <Link to={`/Profile/${post.poster.id}`}><img src={post.poster.profileURL} className="h-8 w-8 rounded-full object-cover"/></Link>
+                        <Link to={`/Profile/${post.poster.id}`}><img src={post.poster.profileURL} className="h-8 w-8 min-w-8 min-h-8 rounded-full object-cover"/></Link>
                         <div className="flex flex-col gap-y-2" style={{ fontFamily: 'Roboot-Bold' }}>
                             <p><span className="hover:underline"><Link to={`/Profile/${post.poster.id}`}>{post.poster.name}</Link></span> <span style={{ fontFamily: 'Roboot-Medium' }} className="text-gray-500 text-md">{format(new Date(post.createdAt), 'MMM dd')}</span></p>
                             <p style={{ fontFamily: 'Roboot-Medium' }}>{post.text}</p>
@@ -199,7 +199,7 @@ function MainFeed(){
 
             {/* Right Column */}
             <div className="border-l border-gray-300 p-4">
-                {/*Right*/}
+            {/*Right*/}
             </div>
         </div>
     )
